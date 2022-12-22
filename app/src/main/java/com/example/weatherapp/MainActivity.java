@@ -7,15 +7,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -56,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
+        SharedPreferences preferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
         setContentView(R.layout.activity_main);
         homeRl=findViewById(R.id.idRLHome);
         loadingPB=findViewById(R.id.idPBLoading);
@@ -84,9 +88,6 @@ public class MainActivity extends AppCompatActivity {
         catch (NullPointerException e){
             Log.e("Tag","null pointer exception",e);
         }
-
-        get_weather_info(cityName);
-
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,9 +98,24 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     cityNameTV.setText(cityName);
                     get_weather_info(city);
+                    editor.putString("Last",cityEdt.getText().toString());
+                    editor.commit();
+                    InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mgr.hideSoftInputFromWindow(cityNameTV.getWindowToken(), 0);
                 }
             }
         });
+        String lastCityNameFound = preferences.getString("Last", "not found");
+        if(lastCityNameFound.equals("not found")) {
+            get_weather_info(cityName);
+            cityNameTV.setText(cityName);
+        }
+        else {
+            cityNameTV.setText(lastCityNameFound);
+            get_weather_info(lastCityNameFound);
+        }
+
+
     }
 
     @Override
