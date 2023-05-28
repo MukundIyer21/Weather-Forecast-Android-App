@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         String lastCityNameFound = preferences.getString("Last", "not found");
+        Log.d("tmkc",lastCityNameFound);
         if(lastCityNameFound.equals("not found")) {
             get_weather_info(cityName);
             cityNameTV.setText(cityName);

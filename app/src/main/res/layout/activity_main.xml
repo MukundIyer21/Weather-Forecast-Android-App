@@ -29,10 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="City Name"
-<<<<<<< HEAD
-=======
-            android:inputType="text"
->>>>>>> 2e9c332 (Last location searched by the user is stored in their local storage and when the user relaunches the app that particular location's data is shown)
             android:textAlignment="center"
             android:gravity="center"
             android:textColor="@color/white"
